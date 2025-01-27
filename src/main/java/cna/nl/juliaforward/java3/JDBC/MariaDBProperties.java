@@ -16,6 +16,9 @@ public class MariaDBProperties {
     public static final String DATABASE_USER = "root";
 
     public static final String DATABASE_PASSWORD = "password";
+
+    public static final String DATABASE_URL_COMPLETE = "jdbc:mariadb://localhost:3306?user="+ DATABASE_USER +"&password=" + DATABASE_PASSWORD;
+
     /**
      *  Register the driver using two options
      *
