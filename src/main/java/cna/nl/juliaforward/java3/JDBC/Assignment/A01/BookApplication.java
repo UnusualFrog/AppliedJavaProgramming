@@ -4,10 +4,28 @@ import org.checkerframework.checker.units.qual.A;
 
 public class BookApplication {
     public static void main(String[] args) {
-        //BookDatabaseManager dbm = new BookDatabaseManager();
         Library lib = new Library();
-
         BookDatabaseManager.loadLibrary(lib);
+
+        // Show all books and their authors
+        for (Book book : lib.getBookList()) {
+            System.out.println(book.getTitle());
+            for (Author author : book.getAuthorList()) {
+                System.out.println(author.getFirstName() + " " + author.getLastName());
+            }
+            System.out.println("-".repeat(20));
+        }
+
+        System.out.println("0".repeat(20));
+
+        // Show all authors and their books
+        for (Author author : lib.getAuthorList()) {
+            System.out.println(author.getFirstName() + " " + author.getLastName());
+            for (Book book : author.getBookList()) {
+                System.out.println(book.getTitle());
+            }
+            System.out.println("-".repeat(20));
+        }
 
 //        System.out.println(lib.getAuthorList());
 //        System.out.println(lib.getBookList());
@@ -27,6 +45,6 @@ public class BookApplication {
 //        BookDatabaseManager.updateBook("GGGG", new Book("GGGG", "This is an update", 20, "XXXX"));
 //        BookDatabaseManager.updateAuthor("133", new Author(133, "Mark", "Danielewski"));
 //        BookDatabaseManager.deleteBook("JJJJ");
-        BookDatabaseManager.deleteAuthor("123");
+//        BookDatabaseManager.deleteAuthor("123");
     }
 }

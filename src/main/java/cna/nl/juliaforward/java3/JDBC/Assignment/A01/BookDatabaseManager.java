@@ -76,14 +76,15 @@ public class BookDatabaseManager {
                 int authorID = rs.getInt("authorID");
                 String isbn = rs.getString("isbn");
 
-//                if (lib.getBook(isbn) != null) {
-//                    Book currentBook = lib.getBook(isbn);
-//                    currentBook.addAuthor(new Author(authorID, rs.getString("firstName"), rs.getString("lastName")));
-//                }
-//
-//                if (lib.getAuthor(authorID) != null) {
-//
-//                }
+                if (lib.getBook(isbn) != null) {
+                    Book currentBook = lib.getBook(isbn);
+                    currentBook.addAuthor(new Author(authorID, rs.getString("firstName"), rs.getString("lastName")));
+                }
+
+                if (lib.getAuthor(authorID) != null) {
+                    Author currentAuthor = lib.getAuthor(authorID);
+                    currentAuthor.addBook(new Book(isbn, rs.getString("title"), rs.getInt("editionNumber"), rs.getString("copyright")));
+                }
 
 
             }
