@@ -1,5 +1,6 @@
 package cna.nl.juliaforward.java3.JDBC.Assignment.A01;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Book {
@@ -14,7 +15,7 @@ public class Book {
         this.title = title;
         this.editionNumber = editionNumber;
         this.copyright = copyright;
-        this.authorList = authorList;
+        this.authorList = new ArrayList<Author>();
     }
 
     public String getIsbn() {

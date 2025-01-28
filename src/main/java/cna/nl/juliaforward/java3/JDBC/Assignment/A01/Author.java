@@ -1,5 +1,6 @@
 package cna.nl.juliaforward.java3.JDBC.Assignment.A01;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Author {
@@ -12,6 +13,7 @@ public class Author {
         this.authorID = authorID;
         this.firstName = firstName;
         this.lastName = lastName;
+        bookList = new ArrayList<Book>();
     }
 
     public List<Book> getBookList() {

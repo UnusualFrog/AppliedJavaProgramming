@@ -14,6 +14,9 @@ public class BookDatabaseManager {
     public static void loadLibrary(Library lib) {
         String BOOKS_QUERY = "SELECT isbn, title, editionNumber, copyright FROM TITLES";
         String AUTHORS_QUERY = "SELECT authorID, firstName, lastName FROM AUTHORS";
+        String RELATIONSHIP_QUERY = "SELECT b.authorID, a.firstName, a.lastName, b.isbn, c.title, c.editionNumber, c.copyright FROM\n" +
+                "authors a JOIN authorisbn b ON a.authorID = b.authorID\n" +
+                "JOIN titles c ON c.isbn = b.isbn ";
 
         // Load all books from the titles table
         try {
@@ -57,6 +60,32 @@ public class BookDatabaseManager {
 //                System.out.println("Last Name: " + currentAuthor.getLastName());
 
                 conn.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        // Load relationships
+        try {
+            Connection conn = DriverManager.getConnection(
+                    MariaDBProperties.DATABASE_URL + DB_NAME, MariaDBProperties.DATABASE_USER, MariaDBProperties.DATABASE_PASSWORD);
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(RELATIONSHIP_QUERY);
+
+            while (rs.next()) {
+                int authorID = rs.getInt("authorID");
+                String isbn = rs.getString("isbn");
+
+//                if (lib.getBook(isbn) != null) {
+//                    Book currentBook = lib.getBook(isbn);
+//                    currentBook.addAuthor(new Author(authorID, rs.getString("firstName"), rs.getString("lastName")));
+//                }
+//
+//                if (lib.getAuthor(authorID) != null) {
+//
+//                }
+
+
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -265,4 +294,43 @@ public class BookDatabaseManager {
     }
 
     // DELETE Methods
+    public static void deleteBook(String isbn) {
+        String DELETE_BOOK_QUERY = "DELETE FROM titles WHERE isbn = ?";
+        System.out.println(DELETE_BOOK_QUERY);
+
+        try {
+            Connection conn = DriverManager.getConnection(
+                    MariaDBProperties.DATABASE_URL + DB_NAME, MariaDBProperties.DATABASE_USER, MariaDBProperties.DATABASE_PASSWORD);
+            PreparedStatement pstmt = conn.prepareStatement(DELETE_BOOK_QUERY);
+            pstmt.setString(1, isbn);
+            ResultSet rs = pstmt.executeQuery();
+
+            System.out.println("Successfully deleted book!");
+
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Error deleting book");
+        }
+    }
+
+    public static void deleteAuthor(String authorID) {
+        String DELETE_AUTHOR_QUERY = "DELETE FROM authors WHERE authorID = ?";
+        System.out.println(DELETE_AUTHOR_QUERY);
+
+        try {
+            Connection conn = DriverManager.getConnection(
+                    MariaDBProperties.DATABASE_URL + DB_NAME, MariaDBProperties.DATABASE_USER, MariaDBProperties.DATABASE_PASSWORD);
+            PreparedStatement pstmt = conn.prepareStatement(DELETE_AUTHOR_QUERY);
+            pstmt.setString(1, authorID);
+            ResultSet rs = pstmt.executeQuery();
+
+            System.out.println("Successfully deleted author!");
+
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Error deleting author");
+        }
+    }
 }

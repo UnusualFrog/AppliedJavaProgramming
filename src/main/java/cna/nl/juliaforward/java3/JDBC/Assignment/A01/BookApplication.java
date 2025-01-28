@@ -25,6 +25,8 @@ public class BookApplication {
 //        System.out.println(BookDatabaseManager.getAllAuthors());
 
 //        BookDatabaseManager.updateBook("GGGG", new Book("GGGG", "This is an update", 20, "XXXX"));
-        BookDatabaseManager.updateAuthor("133", new Author(133, "Mark", "Danielewski"));
+//        BookDatabaseManager.updateAuthor("133", new Author(133, "Mark", "Danielewski"));
+//        BookDatabaseManager.deleteBook("JJJJ");
+        BookDatabaseManager.deleteAuthor("123");
     }
 }
