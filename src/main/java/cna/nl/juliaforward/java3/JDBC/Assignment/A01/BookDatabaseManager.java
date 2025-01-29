@@ -271,7 +271,7 @@ public class BookDatabaseManager {
         }
     }
 
-    public static void updateAuthor(String authorID, Author author) {
+    public static void updateAuthor(int authorID, Author author) {
         String UPDATE_BOOK_QUERY = "UPDATE authors SET authorID = ?, firstName = ?, lastName = ? WHERE authorID = ?";
         System.out.println(UPDATE_BOOK_QUERY);
 
@@ -282,7 +282,7 @@ public class BookDatabaseManager {
             pstmt.setInt(1, author.getAuthorID());
             pstmt.setString(2, author.getFirstName());
             pstmt.setString(3, author.getLastName());
-            pstmt.setString(4, authorID);
+            pstmt.setInt(4, authorID);
             ResultSet rs = pstmt.executeQuery();
 
             System.out.println("Successfully updated book!");

@@ -40,4 +40,42 @@ public class Library {
         }
         return null;
     }
+
+    public void setBook(String isbn, Book book) {
+        Book currentBook = getBook(isbn);
+        if (currentBook != null) {
+            currentBook.setTitle(book.getTitle());
+            currentBook.setEditionNumber(book.getEditionNumber());
+            currentBook.setCopyright(book.getCopyright());
+        }
+
+        for (Author author : authorList) {
+            for (Book b : author.getBookList()) {
+                if (b.getIsbn().equals(isbn)) {
+                    b.setTitle(book.getTitle());
+                    b.setEditionNumber(book.getEditionNumber());
+                    b.setCopyright(book.getCopyright());
+                }
+            }
+        }
+    }
+
+    public void setAuthor(int authorID, Author author) {
+        Author currentAuthor = getAuthor(authorID);
+
+        if (currentAuthor != null) {
+            currentAuthor.setFirstName(author.getFirstName());
+            currentAuthor.setLastName(author.getLastName());
+        }
+
+        //TODO fix relationships
+        for (Book book : bookList) {
+            for (Author a : book.getAuthorList()) {
+                if (a.getAuthorID() == (authorID)) {
+                    a.setFirstName(author.getFirstName());
+                    a.setLastName(author.getLastName());
+                }
+            }
+        }
+    }
 }

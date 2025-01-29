@@ -16,10 +16,6 @@ public class Author {
         bookList = new ArrayList<Book>();
     }
 
-    public List<Book> getBookList() {
-        return bookList;
-    }
-
     public int getAuthorID() {
         return authorID;
     }
@@ -30,6 +26,31 @@ public class Author {
 
     public String getLastName() {
         return lastName;
+    }
+
+    public List<Book> getBookList() {
+        return bookList;
+    }
+
+    public Book getBook(String isbn) {
+        for (Book book : bookList) {
+            if (book.getIsbn().equals(isbn)) {
+                return book;
+            }
+        }
+        return null;
+    }
+
+    public void setAuthorID(int authorID) {
+        this.authorID = authorID;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public void addBook(Book book) {

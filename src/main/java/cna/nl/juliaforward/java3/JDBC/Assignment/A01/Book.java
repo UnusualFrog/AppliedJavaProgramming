@@ -38,6 +38,22 @@ public class Book {
         return authorList;
     }
 
+//    public void setIsbn(String isbn) {
+//        this.isbn = isbn;
+//    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setEditionNumber(int editionNumber) {
+        this.editionNumber = editionNumber;
+    }
+
+    public void setCopyright(String copyright) {
+        this.copyright = copyright;
+    }
+
     public void addAuthor(Author author) {
         this.authorList.add(author);
 
