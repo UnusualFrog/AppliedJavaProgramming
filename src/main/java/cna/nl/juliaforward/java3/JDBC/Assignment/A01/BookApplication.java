@@ -2,6 +2,8 @@ package cna.nl.juliaforward.java3.JDBC.Assignment.A01;
 
 import org.checkerframework.checker.units.qual.A;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -107,6 +109,32 @@ public class BookApplication {
         BookDatabaseManager.updateAuthor(authorID, newAuthor);
     }
 
+    public static void addNewBook(Library lib, String newISBN, String newTitle, int newEdition, String newCopyright) {
+        Book newBook = new Book(newISBN, newTitle, newEdition, newCopyright);
+
+        BookDatabaseManager.createBook(newBook);
+    }
+
+    public static Author getNewBookAuthor(Library lib, List<Author> newAuthors) {
+        System.out.println("Creating new Author");
+        System.out.println("Enter AuthorID: ");
+        int authorID = Integer.parseInt((new Scanner(System.in)).nextLine());
+
+        System.out.println("Enter Author First Name: ");
+        String firstName = (new Scanner(System.in)).nextLine();
+
+        System.out.println("Enter Author Last Name: ");
+        String lastName = (new Scanner(System.in)).nextLine();
+
+        Author newAuthor = new Author(authorID, firstName, lastName);
+        lib.addAuthor(newAuthor);
+        return newAuthor;
+    }
+
+    public static void getExistingBookAuthors(Library lib, List<Author> existingAuthors) {
+
+    }
+
 
     public static void main(String[] args) {
         Library lib = new Library();
@@ -134,7 +162,7 @@ public class BookApplication {
                 System.out.println("Enter new title(or blank to keep original title): ");
                 String newTitle = scanner.nextLine();
 
-                System.out.println("Enter new edition number( or blank to keep original edition number): ");
+                System.out.println("Enter new edition number( or -1 to keep original edition number): ");
                 int newEditionNumber = Integer.parseInt(scanner.nextLine());
 
                 System.out.println("Enter new copyright(or blank to keep original copyright): ");
@@ -153,7 +181,43 @@ public class BookApplication {
 
                 editAuthor(lib, editAuthorID, newFirstName, newLastName);
             } else if (Objects.equals(choice, "5")) {
+                System.out.println("Enter ISBN of book to edit: ");
+                String newISBN = scanner.nextLine();
 
+                System.out.println("Enter new title(or blank to keep original title): ");
+                String newTitle = scanner.nextLine();
+
+                System.out.println("Enter new edition number( or -1 to keep original edition number): ");
+                int newEditionNumber = Integer.parseInt(scanner.nextLine());
+
+                System.out.println("Enter new copyright(or blank to keep original copyright): ");
+                String newCopyright = scanner.nextLine();
+
+                List<Author> newAuthorList = new ArrayList<>();
+
+
+                System.out.println("Choose an option: ");
+                String authorChoice = scanner.nextLine();
+
+                while(authorChoice!= "0") {
+                    System.out.println("0. Exit");
+                    System.out.println("1. Add existing author");
+                    System.out.println("2. Add new author");
+
+                    if (Objects.equals(authorChoice, "1")) {
+                        getNewBookAuthor(lib, newAuthorList);
+                    } else {
+                        getNewBookAuthor(lib, newAuthorList);
+                    }
+
+                    System.out.println("Choose an option: ");
+                    authorChoice = scanner.nextLine();
+                }
+
+
+
+
+                addNewBook(lib, newISBN, newTitle, newEditionNumber, newCopyright);
             } else {
                 System.out.println("Invalid choice");
             }
