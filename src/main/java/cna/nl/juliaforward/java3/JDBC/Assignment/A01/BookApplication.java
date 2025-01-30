@@ -109,8 +109,11 @@ public class BookApplication {
         BookDatabaseManager.updateAuthor(authorID, newAuthor);
     }
 
-    public static void addNewBook(Library lib, String newISBN, String newTitle, int newEdition, String newCopyright) {
+    public static void addNewBook(Library lib, String newISBN, String newTitle, int newEdition, String newCopyright, List<Author> authorList) {
         Book newBook = new Book(newISBN, newTitle, newEdition, newCopyright);
+        for (Author author : authorList) {
+            newBook.addAuthor(author);
+        }
 
         BookDatabaseManager.createBook(newBook);
     }
@@ -131,8 +134,16 @@ public class BookApplication {
         return newAuthor;
     }
 
-    public static void getExistingBookAuthors(Library lib, List<Author> existingAuthors) {
+    public static Author getExistingBookAuthors(Library lib, List<Author> existingAuthors) {
+        for (Author author : lib.getAuthorList()) {
+            System.out.print("AuthorID: " + author.getAuthorID() + " ");
+            System.out.println("Name: " + author.getFirstName() + " " + author.getLastName());
 
+        }
+        System.out.println("Enter AuthorID: ");
+        int choice = Integer.parseInt((new Scanner(System.in)).nextLine());
+
+        return lib.getAuthor(choice);
     }
 
 
@@ -184,40 +195,44 @@ public class BookApplication {
                 System.out.println("Enter ISBN of book to edit: ");
                 String newISBN = scanner.nextLine();
 
-                System.out.println("Enter new title(or blank to keep original title): ");
+                System.out.println("Enter new title: ");
                 String newTitle = scanner.nextLine();
 
-                System.out.println("Enter new edition number( or -1 to keep original edition number): ");
+                System.out.println("Enter new edition number: ");
                 int newEditionNumber = Integer.parseInt(scanner.nextLine());
 
-                System.out.println("Enter new copyright(or blank to keep original copyright): ");
+                System.out.println("Enter new copyright: ");
                 String newCopyright = scanner.nextLine();
 
                 List<Author> newAuthorList = new ArrayList<>();
-
-
+                Author currentAuthor;
+                System.out.println("=".repeat(20));
+                System.out.println("0. Exit");
+                System.out.println("1. Add existing author");
+                System.out.println("2. Add new author");
                 System.out.println("Choose an option: ");
+                System.out.println("=".repeat(20));
                 String authorChoice = scanner.nextLine();
 
-                while(authorChoice!= "0") {
+
+                while(!Objects.equals(authorChoice, "0")) {
+                    if (Objects.equals(authorChoice, "1")) {
+                        currentAuthor = getExistingBookAuthors(lib, newAuthorList);
+                    } else {
+                        currentAuthor = getNewBookAuthor(lib, newAuthorList);
+                    }
+                    newAuthorList.add(currentAuthor);
+
+                    System.out.println("=".repeat(20));
                     System.out.println("0. Exit");
                     System.out.println("1. Add existing author");
                     System.out.println("2. Add new author");
-
-                    if (Objects.equals(authorChoice, "1")) {
-                        getNewBookAuthor(lib, newAuthorList);
-                    } else {
-                        getNewBookAuthor(lib, newAuthorList);
-                    }
-
+                    System.out.println("=".repeat(20));
                     System.out.println("Choose an option: ");
                     authorChoice = scanner.nextLine();
                 }
 
-
-
-
-                addNewBook(lib, newISBN, newTitle, newEditionNumber, newCopyright);
+                addNewBook(lib, newISBN, newTitle, newEditionNumber, newCopyright, newAuthorList);
             } else {
                 System.out.println("Invalid choice");
             }
