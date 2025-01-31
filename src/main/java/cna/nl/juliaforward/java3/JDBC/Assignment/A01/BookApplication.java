@@ -294,38 +294,29 @@ public class BookApplication {
 
                 List<Author> newAuthorList = new ArrayList<>();
                 Author currentAuthor;
-                System.out.println("=".repeat(20));
-                System.out.println("0. Exit");
-                System.out.println("1. Add existing author");
-                System.out.println("2. Add new author");
-                System.out.println("Choose an option: ");
-                System.out.println("=".repeat(20));
-                String authorChoice = scanner.nextLine();
+                String authorChoice = "";
 
-
-                while (newAuthorList.isEmpty() && authorChoice != "-1") {
-                    if (Objects.equals(authorChoice, "1")) {
-                        currentAuthor = getExistingBookAuthors(lib, newAuthorList);
-                        newAuthorList.add(currentAuthor);
-                    }
-                    else if (Objects.equals(authorChoice, "2")) {
-                        currentAuthor = getNewBookAuthor(lib, newAuthorList);
-                        newAuthorList.add(currentAuthor);
-                    } else if (Objects.equals(authorChoice, "0")) {
-                        if(!newAuthorList.isEmpty()) {
-                            authorChoice = "-1";
-                        }
-                        System.out.println(("Error, must add at least 1 author"));
-                    }
-
+                while (newAuthorList.isEmpty() || !Objects.equals(authorChoice, "0")) { // Ensures at least one author is added
                     System.out.println("=".repeat(20));
                     System.out.println("0. Exit");
                     System.out.println("1. Add existing author");
                     System.out.println("2. Add new author");
-                    System.out.println("=".repeat(20));
                     System.out.println("Choose an option: ");
+                    System.out.println("=".repeat(20));
                     authorChoice = scanner.nextLine();
+
+                    if (Objects.equals(authorChoice, "1")) {
+                        currentAuthor = getExistingBookAuthors(lib, newAuthorList);
+                        newAuthorList.add(currentAuthor);
+                    } else if (Objects.equals(authorChoice, "2")) {
+                        currentAuthor = getNewBookAuthor(lib, newAuthorList);
+                        newAuthorList.add(currentAuthor);
+                    } else if (Objects.equals(authorChoice, "0") && newAuthorList.isEmpty()) {
+                        System.out.println("Error: Must add at least one author before exiting.");
+                        authorChoice = ""; // Reset to keep looping
+                    }
                 }
+
 
                 addNewBook(lib, newISBN, newTitle, newEditionNumber, newCopyright, newAuthorList);
             } else {
