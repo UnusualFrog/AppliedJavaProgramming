@@ -16,11 +16,17 @@ public class Library {
     }
 
     public void addBook(Book book) {
-        bookList.add(book);
+        if(!bookList.contains(book)) {
+            bookList.add(book);
+            BookDatabaseManager.createBook(book);
+        }
     }
 
     public void addAuthor(Author author) {
-        authorList.add(author);
+        if (!authorList.contains(author)) {
+            authorList.add(author);
+            BookDatabaseManager.createAuthor(author);
+        }
     }
 
     public Book getBook(String isbn) {
@@ -39,6 +45,14 @@ public class Library {
             }
         }
         return null;
+    }
+
+    public List<Integer> getAuthorIDs() {
+        List<Integer> authorIDs = new ArrayList<>();
+        for (Author author : authorList) {
+            authorIDs.add(author.getAuthorID());
+        }
+        return authorIDs;
     }
 
     public void setBook(String isbn, Book book) {
@@ -68,7 +82,6 @@ public class Library {
             currentAuthor.setLastName(author.getLastName());
         }
 
-        //TODO fix relationships
         for (Book book : bookList) {
             for (Author a : book.getAuthorList()) {
                 if (a.getAuthorID() == (authorID)) {

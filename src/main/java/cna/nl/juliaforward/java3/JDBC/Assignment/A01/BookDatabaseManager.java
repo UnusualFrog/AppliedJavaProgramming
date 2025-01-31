@@ -135,6 +135,24 @@ public class BookDatabaseManager {
         }
     }
 
+    public static void createRelation(Book book, Author author) {
+        String CREATE_RELATION_QUERY = "INSERT INTO authorisbn VALUES (?, ?)";
+        System.out.println(CREATE_RELATION_QUERY);
+        try {
+            Connection conn = DriverManager.getConnection(
+                    MariaDBProperties.DATABASE_URL + DB_NAME, MariaDBProperties.DATABASE_USER, MariaDBProperties.DATABASE_PASSWORD);
+            PreparedStatement pstmt = conn.prepareStatement(CREATE_RELATION_QUERY);
+            pstmt.setInt(1, author.getAuthorID());
+            pstmt.setString(2, book.getIsbn());
+            ResultSet rs = pstmt.executeQuery();
+
+            System.out.println("Created relation successfully!");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Error creating relation");
+        }
+    }
+
     // GET Methods
     public static Book getBook(String isbn) {
         String GET_BOOK_QUERY = "SELECT * FROM titles WHERE isbn = ?";

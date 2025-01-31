@@ -1,12 +1,9 @@
 package cna.nl.juliaforward.java3.JDBC.Assignment.A01;
 
-import org.checkerframework.checker.units.qual.A;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
-
 
 
 public class BookApplication {
@@ -113,39 +110,92 @@ public class BookApplication {
         Book newBook = new Book(newISBN, newTitle, newEdition, newCopyright);
         for (Author author : authorList) {
             newBook.addAuthor(author);
+            lib.addAuthor(author);
         }
 
-        BookDatabaseManager.createBook(newBook);
+        lib.addBook(newBook);
+        for (Author author : authorList) {
+            BookDatabaseManager.createRelation(newBook, author);
+        }
     }
 
     public static Author getNewBookAuthor(Library lib, List<Author> newAuthors) {
+        Scanner sc = new Scanner(System.in);
+        String authorID;
+        String firstName;
+        String lastName;
+
         System.out.println("Creating new Author");
         System.out.println("Enter AuthorID: ");
-        int authorID = Integer.parseInt((new Scanner(System.in)).nextLine());
+        authorID = sc.nextLine();
+        while (lib.getAuthor(Integer.parseInt(authorID)) != null || authorID == "") {
+            if (lib.getAuthor(Integer.parseInt(authorID)) != null) {
+                System.out.println("AuthorID already exists");
+            } else {
+                System.out.println("AuthorID cannot be empty");
+            }
+
+            System.out.println("Enter AuthorID: ");
+            authorID = sc.nextLine();
+        }
 
         System.out.println("Enter Author First Name: ");
-        String firstName = (new Scanner(System.in)).nextLine();
+        firstName = sc.nextLine();
+        while (firstName.isEmpty()) {
+            System.out.print("Enter Author First Name: ");
+            firstName = sc.nextLine().trim();
+            if (firstName.isEmpty()) {
+                System.out.println("First name cannot be blank. Please enter a valid first name.");
+            }
+        }
 
         System.out.println("Enter Author Last Name: ");
-        String lastName = (new Scanner(System.in)).nextLine();
+        lastName = sc.nextLine();
+        while (lastName.isEmpty()) {
+            System.out.print("Enter Author Last Name: ");
+            lastName = sc.nextLine().trim();
+            if (lastName.isEmpty()) {
+                System.out.println("Last name cannot be blank. Please enter a valid last name.");
+            }
+        }
 
-        Author newAuthor = new Author(authorID, firstName, lastName);
+        Author newAuthor = new Author(Integer.parseInt(authorID), firstName, lastName);
         lib.addAuthor(newAuthor);
         return newAuthor;
     }
 
     public static Author getExistingBookAuthors(Library lib, List<Author> existingAuthors) {
+        Scanner sc = new Scanner(System.in);
+        String authorChoice = "";
+        int authorID = -1;
+
         for (Author author : lib.getAuthorList()) {
             System.out.print("AuthorID: " + author.getAuthorID() + " ");
             System.out.println("Name: " + author.getFirstName() + " " + author.getLastName());
-
         }
-        System.out.println("Enter AuthorID: ");
-        int choice = Integer.parseInt((new Scanner(System.in)).nextLine());
 
-        return lib.getAuthor(choice);
+        while (authorID == -1) {
+            System.out.print("Enter AuthorID: ");
+            authorChoice = sc.nextLine().trim();
+
+            if (!authorChoice.isEmpty()) {
+                try {
+                    authorID = Integer.parseInt(authorChoice);
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Please enter a valid integer for AuthorID.");
+                    authorID = -1; // Reset to keep the loop running
+                }
+                if (!lib.getAuthorIDs().contains(authorID)) {
+                    System.out.println("AuthorID does not exist. Please enter an existing ID.");
+                    authorID = -1;
+                }
+            } else {
+                System.out.println("AuthorID cannot be blank. Please enter a valid number.");
+            }
+        }
+
+        return lib.getAuthor(Integer.parseInt(authorChoice));
     }
-
 
     public static void main(String[] args) {
         Library lib = new Library();
@@ -192,17 +242,55 @@ public class BookApplication {
 
                 editAuthor(lib, editAuthorID, newFirstName, newLastName);
             } else if (Objects.equals(choice, "5")) {
-                System.out.println("Enter ISBN of book to edit: ");
-                String newISBN = scanner.nextLine();
+                Scanner sc = new Scanner(System.in);
+                String newISBN = "";
+                String newTitle = "";
+                int newEditionNumber = -1;
+                String newCopyright = "";
 
-                System.out.println("Enter new title: ");
-                String newTitle = scanner.nextLine();
+                // Validate ISBN (ensure it's not empty)
+                while (newISBN.isEmpty()) {
+                    System.out.print("Enter ISBN of new Book: ");
+                    newISBN = sc.nextLine().trim();
+                    if (newISBN.isEmpty()) {
+                        System.out.println("ISBN cannot be blank. Please enter a valid ISBN.");
+                    }
+                }
 
-                System.out.println("Enter new edition number: ");
-                int newEditionNumber = Integer.parseInt(scanner.nextLine());
+                // Validate Title (ensure it's not empty)
+                while (newTitle.isEmpty()) {
+                    System.out.print("Enter new title: ");
+                    newTitle = sc.nextLine().trim();
+                    if (newTitle.isEmpty()) {
+                        System.out.println("Title cannot be blank. Please enter a valid title.");
+                    }
+                }
 
-                System.out.println("Enter new copyright: ");
-                String newCopyright = scanner.nextLine();
+                // Validate Edition Number (ensure it's a valid integer)
+                while (newEditionNumber == -1) {
+                    System.out.print("Enter new edition number: ");
+                    String editionInput = sc.nextLine().trim();
+
+                    if (!editionInput.isEmpty()) {
+                        try {
+                            newEditionNumber = Integer.parseInt(editionInput);
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid input. Please enter a valid integer for the edition number.");
+                            newEditionNumber = -1; // Reset to keep the loop running
+                        }
+                    } else {
+                        System.out.println("Edition number cannot be blank. Please enter a valid number.");
+                    }
+                }
+
+                // Validate Copyright (ensure it's not empty)
+                while (newCopyright.isEmpty()) {
+                    System.out.print("Enter new copyright: ");
+                    newCopyright = sc.nextLine().trim();
+                    if (newCopyright.isEmpty()) {
+                        System.out.println("Copyright cannot be blank. Please enter a valid copyright.");
+                    }
+                }
 
                 List<Author> newAuthorList = new ArrayList<>();
                 Author currentAuthor;
@@ -215,13 +303,20 @@ public class BookApplication {
                 String authorChoice = scanner.nextLine();
 
 
-                while(!Objects.equals(authorChoice, "0")) {
+                while (newAuthorList.isEmpty() && authorChoice != "-1") {
                     if (Objects.equals(authorChoice, "1")) {
                         currentAuthor = getExistingBookAuthors(lib, newAuthorList);
-                    } else {
-                        currentAuthor = getNewBookAuthor(lib, newAuthorList);
+                        newAuthorList.add(currentAuthor);
                     }
-                    newAuthorList.add(currentAuthor);
+                    else if (Objects.equals(authorChoice, "2")) {
+                        currentAuthor = getNewBookAuthor(lib, newAuthorList);
+                        newAuthorList.add(currentAuthor);
+                    } else if (Objects.equals(authorChoice, "0")) {
+                        if(!newAuthorList.isEmpty()) {
+                            authorChoice = "-1";
+                        }
+                        System.out.println(("Error, must add at least 1 author"));
+                    }
 
                     System.out.println("=".repeat(20));
                     System.out.println("0. Exit");
@@ -241,51 +336,5 @@ public class BookApplication {
             System.out.println("Choose an option: ");
             choice = scanner.nextLine();
         }
-
-
-
-
-
-
-
-//        // Show all books and their authors
-//        for (Book book : lib.getBookList()) {
-//            System.out.println(book.getTitle());
-//            for (Author author : book.getAuthorList()) {
-//                System.out.println(author.getFirstName() + " " + author.getLastName());
-//            }
-//            System.out.println("-".repeat(20));
-//        }
-//
-//        System.out.println("0".repeat(20));
-//
-//        // Show all authors and their books
-//        for (Author author : lib.getAuthorList()) {
-//            System.out.println(author.getFirstName() + " " + author.getLastName());
-//            for (Book book : author.getBookList()) {
-//                System.out.println(book.getTitle());
-//            }
-//            System.out.println("-".repeat(20));
-//        }
-//
-////        System.out.println(lib.getAuthorList());
-////        System.out.println(lib.getBookList());
-//
-////        Book book = new Book("JJJJ", "JJJJJJJJJ", 89, "31XX");
-////        BookDatabaseManager.createBook(book);
-//
-////        Author author = new Author(133, "John", "Smith");
-////        BookDatabaseManager.createAuthor(author);
-//
-////        System.out.println(BookDatabaseManager.getBook("ZZZZ").getTitle());
-////        System.out.println(BookDatabaseManager.getAllBooks());
-//
-////        System.out.println(BookDatabaseManager.getAuthor("5").getFirstName() +" " + BookDatabaseManager.getAuthor("5").getLastName());
-////        System.out.println(BookDatabaseManager.getAllAuthors());
-//
-////        BookDatabaseManager.updateBook("GGGG", new Book("GGGG", "This is an update", 20, "XXXX"));
-////        BookDatabaseManager.updateAuthor("133", new Author(133, "Mark", "Danielewski"));
-////        BookDatabaseManager.deleteBook("JJJJ");
-////        BookDatabaseManager.deleteAuthor("123");
     }
 }
