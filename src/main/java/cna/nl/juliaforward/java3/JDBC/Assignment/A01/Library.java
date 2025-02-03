@@ -148,5 +148,30 @@ public class Library {
             }
         }
     }
+
+    /**
+     * Deletes a book from the library by its ISBN.
+     *
+     * @param isbn the ISBN of the book to be deleted.
+     */
+    public void deleteBook(String isbn) {
+        Book currentBook = getBook(isbn);
+        if (currentBook != null) {
+            bookList.remove(currentBook);
+        }
+    }
+
+    /**
+     * Deletes an author from the library by their author ID.
+     *
+     * @param authorID the ID of the author to be deleted.
+     */
+    public void deleteAuthor(int authorID) {
+        Author currentAuthor = getAuthor(authorID);
+        if (currentAuthor != null) {
+            authorList.remove(currentAuthor);
+        }
+    }
+
 }
 

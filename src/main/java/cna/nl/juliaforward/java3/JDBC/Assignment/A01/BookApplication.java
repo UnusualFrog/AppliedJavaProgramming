@@ -199,6 +199,17 @@ public class BookApplication {
 
         return lib.getAuthor(Integer.parseInt(authorChoice));
     }
+    public static void deleteBook(Library lib, String isbn) {
+        Book currentBook = lib.getBook(isbn);
+        BookDatabaseManager.deleteBook(currentBook, lib);
+        lib.deleteBook(isbn);
+    }
+
+    public static void deleteAuthor(Library lib, int authorID) {
+        Author currentAuthor = lib.getAuthor(authorID);
+        BookDatabaseManager.deleteAuthor(currentAuthor, lib);
+        lib.deleteAuthor(authorID);
+    }
 
     public static void main(String[] args) {
         Library lib = new Library();
@@ -323,16 +334,16 @@ public class BookApplication {
 
                 addNewBook(lib, newISBN, newTitle, newEditionNumber, newCopyright, newAuthorList);
             } else if (Objects.equals(choice, "6")) {
-                System.out.println("Enter ISBN of book to edit: ");
+                System.out.println("Enter ISBN of book to delete: ");
                 String isbn = scanner.nextLine();
 
 
-                //deleteBook(isbn)
+                deleteBook(lib, isbn);
             } else if (Objects.equals(choice, "7")) {
                 System.out.println("Enter Author ID of author to delete: ");
                 int authorID = Integer.parseInt(scanner.nextLine());
 
-                //deleteAuthor(authorID);
+                deleteAuthor(lib, authorID);
             } else {
                 System.out.println("Invalid option. Please enter a valid option.");
             }

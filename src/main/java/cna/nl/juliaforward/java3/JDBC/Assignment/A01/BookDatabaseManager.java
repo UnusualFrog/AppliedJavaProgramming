@@ -460,6 +460,14 @@ public class BookDatabaseManager {
         String DELETE_BOOK_QUERY = "DELETE FROM titles WHERE isbn = ?";
         System.out.println(DELETE_BOOK_QUERY);
 
+        for (Author author : lib.getAuthorList()) {
+            for (Book currentBook: author.getBookList()) {
+                if (currentBook.getIsbn().equals(book.getIsbn())) {
+                    deleteRelation(book, author);
+                }
+            }
+        }
+
         try {
             Connection conn = DriverManager.getConnection(
                     MariaDBProperties.DATABASE_URL + DB_NAME, MariaDBProperties.DATABASE_USER, MariaDBProperties.DATABASE_PASSWORD);
@@ -474,11 +482,7 @@ public class BookDatabaseManager {
             e.printStackTrace();
             System.out.println("Error deleting book");
         }
-        for (Author author : lib.getAuthorList()) {
-            if (author.getBookList().contains(book)) {
-                deleteRelation(book, author);
-            }
-        }
+
 
     }
 
@@ -493,6 +497,14 @@ public class BookDatabaseManager {
         String DELETE_AUTHOR_QUERY = "DELETE FROM authors WHERE authorID = ?";
         System.out.println(DELETE_AUTHOR_QUERY);
 
+        for (Book book : lib.getBookList()) {
+            for (Author currentAuthor: book.getAuthorList()) {
+                if (currentAuthor.getAuthorID() == (author.getAuthorID())) {
+                    deleteRelation(book, author);
+                }
+            }
+        }
+
         try {
             Connection conn = DriverManager.getConnection(
                     MariaDBProperties.DATABASE_URL + DB_NAME, MariaDBProperties.DATABASE_USER, MariaDBProperties.DATABASE_PASSWORD);
@@ -506,12 +518,6 @@ public class BookDatabaseManager {
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Error deleting author");
-        }
-
-        for (Book book : lib.getBookList()) {
-            if (book.getAuthorList().contains(author)) {
-                deleteRelation(book, author);
-            }
         }
     }
 
