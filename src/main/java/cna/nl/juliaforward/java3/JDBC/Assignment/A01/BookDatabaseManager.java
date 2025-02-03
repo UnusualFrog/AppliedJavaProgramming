@@ -213,6 +213,13 @@ public class BookDatabaseManager {
 
 
     // GET Methods
+
+    /**
+     * Retrieves a book from the database using its ISBN.
+     *
+     * @param isbn The ISBN of the book to retrieve.
+     * @return The Book object if found, otherwise null.
+     */
     public static Book getBook(String isbn) {
         String GET_BOOK_QUERY = "SELECT * FROM titles WHERE isbn = ?";
         System.out.println(GET_BOOK_QUERY);
@@ -220,14 +227,23 @@ public class BookDatabaseManager {
         Book book = null;
         try {
             Connection conn = DriverManager.getConnection(
-                    MariaDBProperties.DATABASE_URL + DB_NAME, MariaDBProperties.DATABASE_USER, MariaDBProperties.DATABASE_PASSWORD);
+                    MariaDBProperties.DATABASE_URL + DB_NAME,
+                    MariaDBProperties.DATABASE_USER,
+                    MariaDBProperties.DATABASE_PASSWORD);
             PreparedStatement pstmt = conn.prepareStatement(GET_BOOK_QUERY);
+
+            // Set query parameter with the provided ISBN
             pstmt.setString(1, isbn);
             ResultSet rs = pstmt.executeQuery();
 
+            // If a book is found, create a Book object
             if (rs.next()) {
-                book = new Book(rs.getString("isbn"), rs.getString("title"), rs.getInt("editionNumber"), rs.getString("copyright"));
-
+                book = new Book(
+                        rs.getString("isbn"),
+                        rs.getString("title"),
+                        rs.getInt("editionNumber"),
+                        rs.getString("copyright")
+                );
                 System.out.println("Successfully retrieved book!");
             }
 
@@ -240,22 +256,34 @@ public class BookDatabaseManager {
         return book;
     }
 
+
+    /**
+     * Retrieves all books from the database.
+     *
+     * @return A list of Book objects representing all books in the database.
+     */
     public static List<Book> getAllBooks() {
         String GET_BOOKS_QUERY = "SELECT * FROM titles";
         System.out.println(GET_BOOKS_QUERY);
 
-        List<Book> books = new ArrayList<Book>();
+        List<Book> books = new ArrayList<>();
         try {
             Connection conn = DriverManager.getConnection(
-                    MariaDBProperties.DATABASE_URL + DB_NAME, MariaDBProperties.DATABASE_USER, MariaDBProperties.DATABASE_PASSWORD);
+                    MariaDBProperties.DATABASE_URL + DB_NAME,
+                    MariaDBProperties.DATABASE_USER,
+                    MariaDBProperties.DATABASE_PASSWORD);
             PreparedStatement pstmt = conn.prepareStatement(GET_BOOKS_QUERY);
             ResultSet rs = pstmt.executeQuery();
 
+            // Iterate through result set and create Book objects
             while (rs.next()) {
-                Book book = null;
-                book = new Book(rs.getString("isbn"), rs.getString("title"), rs.getInt("editionNumber"), rs.getString("copyright"));
+                Book book = new Book(
+                        rs.getString("isbn"),
+                        rs.getString("title"),
+                        rs.getInt("editionNumber"),
+                        rs.getString("copyright")
+                );
                 books.add(book);
-
                 System.out.println("Successfully retrieved: " + rs.getString("title"));
             }
 
@@ -268,6 +296,12 @@ public class BookDatabaseManager {
         return books;
     }
 
+    /**
+     * Retrieves an author from the database using their author ID.
+     *
+     * @param authorID The ID of the author to retrieve.
+     * @return The {@code Author} object if found, otherwise {@code null}.
+     */
     public static Author getAuthor(String authorID) {
         String GET_AUTHOR_QUERY = "SELECT * FROM authors WHERE authorID = ?";
         System.out.println(GET_AUTHOR_QUERY);
@@ -275,26 +309,40 @@ public class BookDatabaseManager {
         Author author = null;
         try {
             Connection conn = DriverManager.getConnection(
-                    MariaDBProperties.DATABASE_URL + DB_NAME, MariaDBProperties.DATABASE_USER, MariaDBProperties.DATABASE_PASSWORD);
+                    MariaDBProperties.DATABASE_URL + DB_NAME,
+                    MariaDBProperties.DATABASE_USER,
+                    MariaDBProperties.DATABASE_PASSWORD);
             PreparedStatement pstmt = conn.prepareStatement(GET_AUTHOR_QUERY);
+
+            // Set query parameter with the provided author ID
             pstmt.setString(1, authorID);
             ResultSet rs = pstmt.executeQuery();
 
+            // If an author is found, create an Author object
             if (rs.next()) {
-                author = new Author(rs.getInt("authorID"), rs.getString("firstName"), rs.getString("lastName"));
-
-                System.out.println("Successfully retrieved authors!");
+                author = new Author(
+                        rs.getInt("authorID"),
+                        rs.getString("firstName"),
+                        rs.getString("lastName")
+                );
+                System.out.println("Successfully retrieved author!");
             }
 
             conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("Error getting authors");
+            System.out.println("Error getting author");
         }
 
         return author;
     }
 
+
+    /**
+     * Retrieves all authors from the database.
+     *
+     * @return a List of Author objects representing all authors retrieved from the database.
+     */
     public static List<Author> getAllAuthors() {
         String GET_AUTHORS_QUERY = "SELECT * FROM authors";
         System.out.println(GET_AUTHORS_QUERY);
@@ -324,6 +372,13 @@ public class BookDatabaseManager {
     }
 
     // UPDATE Methods
+
+    /**
+     * Updates the details of a book in the database.
+     *
+     * @param isbn the ISBN of the book to be updated.
+     * @param book the {@link Book} object containing the updated book details.
+     */
     public static void updateBook(String isbn, Book book) {
         String UPDATE_BOOK_QUERY = "UPDATE titles SET isbn = ?, title = ?, editionNumber = ?, copyright = ? WHERE isbn = ?";
         System.out.println(UPDATE_BOOK_QUERY);
@@ -337,7 +392,7 @@ public class BookDatabaseManager {
             pstmt.setInt(3, book.getEditionNumber());
             pstmt.setString(4, book.getCopyright());
             pstmt.setString(5, isbn);
-            ResultSet rs = pstmt.executeQuery();
+            pstmt.executeUpdate();
 
             System.out.println("Successfully updated book!");
 
@@ -348,6 +403,13 @@ public class BookDatabaseManager {
         }
     }
 
+
+    /**
+     * Updates the details of an author in the database.
+     *
+     * @param authorID the ID of the author to be updated.
+     * @param author the {@link Author} object containing the updated author details.
+     */
     public static void updateAuthor(int authorID, Author author) {
         String UPDATE_BOOK_QUERY = "UPDATE authors SET authorID = ?, firstName = ?, lastName = ? WHERE authorID = ?";
         System.out.println(UPDATE_BOOK_QUERY);
@@ -360,7 +422,7 @@ public class BookDatabaseManager {
             pstmt.setString(2, author.getFirstName());
             pstmt.setString(3, author.getLastName());
             pstmt.setInt(4, authorID);
-            ResultSet rs = pstmt.executeQuery();
+            pstmt.executeUpdate();
 
             System.out.println("Successfully updated book!");
 
@@ -371,7 +433,14 @@ public class BookDatabaseManager {
         }
     }
 
+
     // DELETE Methods
+
+    /**
+     * Deletes a book from the database.
+     *
+     * @param isbn the ISBN of the book to be deleted.
+     */
     public static void deleteBook(String isbn) {
         String DELETE_BOOK_QUERY = "DELETE FROM titles WHERE isbn = ?";
         System.out.println(DELETE_BOOK_QUERY);
@@ -381,7 +450,7 @@ public class BookDatabaseManager {
                     MariaDBProperties.DATABASE_URL + DB_NAME, MariaDBProperties.DATABASE_USER, MariaDBProperties.DATABASE_PASSWORD);
             PreparedStatement pstmt = conn.prepareStatement(DELETE_BOOK_QUERY);
             pstmt.setString(1, isbn);
-            ResultSet rs = pstmt.executeQuery();
+            pstmt.executeUpdate();
 
             System.out.println("Successfully deleted book!");
 
@@ -392,6 +461,12 @@ public class BookDatabaseManager {
         }
     }
 
+
+    /**
+     * Deletes an author from the database.
+     *
+     * @param authorID the ID of the author to be deleted.
+     */
     public static void deleteAuthor(String authorID) {
         String DELETE_AUTHOR_QUERY = "DELETE FROM authors WHERE authorID = ?";
         System.out.println(DELETE_AUTHOR_QUERY);
@@ -401,7 +476,7 @@ public class BookDatabaseManager {
                     MariaDBProperties.DATABASE_URL + DB_NAME, MariaDBProperties.DATABASE_USER, MariaDBProperties.DATABASE_PASSWORD);
             PreparedStatement pstmt = conn.prepareStatement(DELETE_AUTHOR_QUERY);
             pstmt.setString(1, authorID);
-            ResultSet rs = pstmt.executeQuery();
+            pstmt.executeUpdate();
 
             System.out.println("Successfully deleted author!");
 
@@ -412,6 +487,13 @@ public class BookDatabaseManager {
         }
     }
 
+
+    /**
+     * Deletes a relationship between a book and an author from the database.
+     *
+     * @param book the Book object representing the book involved in the relation.
+     * @param author the Author object representing the author involved in the relation.
+     */
     public static void deleteRelation(Book book, Author author) {
         String DELETE_RELATION_QUERY = "DELETE FROM authorisbn WHERE authorID = ? AND isbn = ?";
         System.out.println(DELETE_RELATION_QUERY);
@@ -421,7 +503,7 @@ public class BookDatabaseManager {
             PreparedStatement pstmt = conn.prepareStatement(DELETE_RELATION_QUERY);
             pstmt.setInt(1, author.getAuthorID());
             pstmt.setString(2, book.getIsbn());
-            ResultSet rs = pstmt.executeQuery();
+            pstmt.executeUpdate();
 
             System.out.println("Deleted relation successfully!");
             conn.close();
@@ -430,4 +512,5 @@ public class BookDatabaseManager {
             System.out.println("Error deleting relation");
         }
     }
+
 }
