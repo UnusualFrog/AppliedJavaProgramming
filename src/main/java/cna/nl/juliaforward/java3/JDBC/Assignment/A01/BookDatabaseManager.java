@@ -181,16 +181,27 @@ public class BookDatabaseManager {
     }
 
 
+    /**
+     * Creates a relationship between a book and an author in the database.
+     *
+     * @param book   The {@code Book} object representing the book.
+     * @param author The {@code Author} object representing the author.
+     */
     public static void createRelation(Book book, Author author) {
         String CREATE_RELATION_QUERY = "INSERT INTO authorisbn VALUES (?, ?)";
         System.out.println(CREATE_RELATION_QUERY);
         try {
             Connection conn = DriverManager.getConnection(
-                    MariaDBProperties.DATABASE_URL + DB_NAME, MariaDBProperties.DATABASE_USER, MariaDBProperties.DATABASE_PASSWORD);
+                    MariaDBProperties.DATABASE_URL + DB_NAME,
+                    MariaDBProperties.DATABASE_USER,
+                    MariaDBProperties.DATABASE_PASSWORD);
             PreparedStatement pstmt = conn.prepareStatement(CREATE_RELATION_QUERY);
+
+            // Set query parameters with author ID and book ISBN
             pstmt.setInt(1, author.getAuthorID());
             pstmt.setString(2, book.getIsbn());
-            ResultSet rs = pstmt.executeQuery();
+
+            pstmt.executeUpdate();
 
             System.out.println("Created relation successfully!");
             conn.close();
@@ -199,6 +210,7 @@ public class BookDatabaseManager {
             System.out.println("Error creating relation");
         }
     }
+
 
     // GET Methods
     public static Book getBook(String isbn) {
