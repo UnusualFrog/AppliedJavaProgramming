@@ -114,9 +114,6 @@ public class BookApplication {
         }
 
         lib.addBook(newBook);
-        for (Author author : authorList) {
-            BookDatabaseManager.createRelation(newBook, author);
-        }
     }
 
     public static Author getNewBookAuthor(Library lib, List<Author> newAuthors) {

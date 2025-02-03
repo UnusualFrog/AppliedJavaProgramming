@@ -40,7 +40,7 @@ public class Library {
     public void addBook(Book book) {
         if (!bookList.contains(book)) {
             bookList.add(book);
-            BookDatabaseManager.createBook(book);
+            BookDatabaseManager.createBook(book, this);
         }
     }
 
@@ -53,7 +53,7 @@ public class Library {
     public void addAuthor(Author author) {
         if (!authorList.contains(author)) {
             authorList.add(author);
-            BookDatabaseManager.createAuthor(author);
+            BookDatabaseManager.createAuthor(author, this);
         }
     }
 

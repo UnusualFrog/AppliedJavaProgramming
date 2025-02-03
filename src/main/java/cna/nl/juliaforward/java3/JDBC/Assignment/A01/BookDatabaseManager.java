@@ -120,11 +120,12 @@ public class BookDatabaseManager {
     // CREATE methods
 
     /**
-     * Inserts a new book record into the database.
+     * Inserts a new book record into the database. Adds relationship between book and its authors
      *
      * @param book The book object containing the details of the book to be added.
+     * @param lib The library object containing all books and authors
      */
-    public static void createBook(Book book) {
+    public static void createBook(Book book, Library lib) {
         String CREATE_BOOK_QUERY = "INSERT INTO titles VALUES (?, ?, ?, ?)";
         System.out.println(CREATE_BOOK_QUERY);
         try {
@@ -148,14 +149,21 @@ public class BookDatabaseManager {
             e.printStackTrace();
             System.out.println("Error creating book");
         }
+
+        for (Author author : lib.getAuthorList()) {
+            if (author.getBookList().contains(book)) {
+                createRelation(book, author);
+            }
+        }
     }
 
     /**
      * Inserts a new author record into the database.
      *
      * @param author The Author object containing the details of the author to be added.
+     * @param lib The library object containing all books and authors
      */
-    public static void createAuthor(Author author) {
+    public static void createAuthor(Author author, Library lib) {
         String CREATE_AUTHOR_QUERY = "INSERT INTO authors VALUES (?, ?, ?)";
         System.out.println(CREATE_AUTHOR_QUERY);
         try {
@@ -178,14 +186,20 @@ public class BookDatabaseManager {
             e.printStackTrace();
             System.out.println("Error creating author");
         }
+
+        for (Book book : lib.getBookList()) {
+            if (book.getAuthorList().contains(author)) {
+                createRelation(book, author);
+            }
+        }
     }
 
 
     /**
      * Creates a relationship between a book and an author in the database.
      *
-     * @param book   The {@code Book} object representing the book.
-     * @param author The {@code Author} object representing the author.
+     * @param book   The Book object representing the book.
+     * @param author The Author object representing the author.
      */
     public static void createRelation(Book book, Author author) {
         String CREATE_RELATION_QUERY = "INSERT INTO authorisbn VALUES (?, ?)";
@@ -300,7 +314,7 @@ public class BookDatabaseManager {
      * Retrieves an author from the database using their author ID.
      *
      * @param authorID The ID of the author to retrieve.
-     * @return The {@code Author} object if found, otherwise {@code null}.
+     * @return The {@code Author} object if found, otherwise null.
      */
     public static Author getAuthor(String authorID) {
         String GET_AUTHOR_QUERY = "SELECT * FROM authors WHERE authorID = ?";
@@ -439,9 +453,10 @@ public class BookDatabaseManager {
     /**
      * Deletes a book from the database.
      *
-     * @param isbn the ISBN of the book to be deleted.
+     * @param book the book to be deleted.
+     * @param lib The library object containing all books and authors
      */
-    public static void deleteBook(String isbn) {
+    public static void deleteBook(Book book, Library lib) {
         String DELETE_BOOK_QUERY = "DELETE FROM titles WHERE isbn = ?";
         System.out.println(DELETE_BOOK_QUERY);
 
@@ -449,7 +464,7 @@ public class BookDatabaseManager {
             Connection conn = DriverManager.getConnection(
                     MariaDBProperties.DATABASE_URL + DB_NAME, MariaDBProperties.DATABASE_USER, MariaDBProperties.DATABASE_PASSWORD);
             PreparedStatement pstmt = conn.prepareStatement(DELETE_BOOK_QUERY);
-            pstmt.setString(1, isbn);
+            pstmt.setString(1, book.getIsbn());
             pstmt.executeUpdate();
 
             System.out.println("Successfully deleted book!");
@@ -459,15 +474,22 @@ public class BookDatabaseManager {
             e.printStackTrace();
             System.out.println("Error deleting book");
         }
+        for (Author author : lib.getAuthorList()) {
+            if (author.getBookList().contains(book)) {
+                deleteRelation(book, author);
+            }
+        }
+
     }
 
 
     /**
      * Deletes an author from the database.
      *
-     * @param authorID the ID of the author to be deleted.
+     * @param author the author to be deleted.
+     * @param lib The library object containing all books and authors
      */
-    public static void deleteAuthor(String authorID) {
+    public static void deleteAuthor(Author author, Library lib) {
         String DELETE_AUTHOR_QUERY = "DELETE FROM authors WHERE authorID = ?";
         System.out.println(DELETE_AUTHOR_QUERY);
 
@@ -475,7 +497,7 @@ public class BookDatabaseManager {
             Connection conn = DriverManager.getConnection(
                     MariaDBProperties.DATABASE_URL + DB_NAME, MariaDBProperties.DATABASE_USER, MariaDBProperties.DATABASE_PASSWORD);
             PreparedStatement pstmt = conn.prepareStatement(DELETE_AUTHOR_QUERY);
-            pstmt.setString(1, authorID);
+            pstmt.setInt(1, author.getAuthorID());
             pstmt.executeUpdate();
 
             System.out.println("Successfully deleted author!");
@@ -484,6 +506,12 @@ public class BookDatabaseManager {
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Error deleting author");
+        }
+
+        for (Book book : lib.getBookList()) {
+            if (book.getAuthorList().contains(author)) {
+                deleteRelation(book, author);
+            }
         }
     }
 
