@@ -15,6 +15,8 @@ public class BookApplication {
         System.out.println("3. Edit Book by ISBN");
         System.out.println("4. Edit Author by ID");
         System.out.println("5. Add New Book");
+        System.out.println("6. Delete Book by ISBN");
+        System.out.println("7. Delete Author by ID");
         System.out.println("=".repeat(20));
     }
 
