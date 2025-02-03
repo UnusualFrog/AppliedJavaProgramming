@@ -352,4 +352,22 @@ public class BookDatabaseManager {
             System.out.println("Error deleting author");
         }
     }
+
+    public static void deleteRelation(Book book, Author author) {
+        String DELETE_RELATION_QUERY = "DELETE FROM authorisbn WHERE authorID = ? AND isbn = ?";
+        System.out.println(DELETE_RELATION_QUERY);
+        try {
+            Connection conn = DriverManager.getConnection(
+                    MariaDBProperties.DATABASE_URL + DB_NAME, MariaDBProperties.DATABASE_USER, MariaDBProperties.DATABASE_PASSWORD);
+            PreparedStatement pstmt = conn.prepareStatement(DELETE_RELATION_QUERY);
+            pstmt.setInt(1, author.getAuthorID());
+            pstmt.setString(2, book.getIsbn());
+            ResultSet rs = pstmt.executeQuery();
+
+            System.out.println("Deleted relation successfully!");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Error deleting relation");
+        }
+    }
 }
