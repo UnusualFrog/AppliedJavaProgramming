@@ -322,8 +322,19 @@ public class BookApplication {
 
 
                 addNewBook(lib, newISBN, newTitle, newEditionNumber, newCopyright, newAuthorList);
+            } else if (Objects.equals(choice, "6")) {
+                System.out.println("Enter ISBN of book to edit: ");
+                String isbn = scanner.nextLine();
+
+
+                //deleteBook(isbn)
+            } else if (Objects.equals(choice, "7")) {
+                System.out.println("Enter Author ID of author to delete: ");
+                int authorID = Integer.parseInt(scanner.nextLine());
+
+                //deleteAuthor(authorID);
             } else {
-                System.out.println("Invalid choice");
+                System.out.println("Invalid option. Please enter a valid option.");
             }
 
             printOptions();
