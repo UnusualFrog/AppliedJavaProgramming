@@ -94,22 +94,9 @@ public class BookDatabaseManager {
                 Author currentAuthor = lib.getAuthor(authorID);
 
                 // Add relationships if the book and author exist
-                if (currentBook != null) {
-                    currentBook.addAuthor(new Author(
-                            authorID,
-                            rs.getString("firstName"),
-                            rs.getString("lastName")
-                    ));
-                }
+                currentBook.addAuthor(currentAuthor);
+                currentAuthor.addBook(currentBook);
 
-                if (currentAuthor != null) {
-                    currentAuthor.addBook(new Book(
-                            isbn,
-                            rs.getString("title"),
-                            rs.getInt("editionNumber"),
-                            rs.getString("copyright")
-                    ));
-                }
             }
             conn.close();
         } catch (SQLException e) {

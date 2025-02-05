@@ -339,6 +339,7 @@ public class BookApplication {
     public static void main(String[] args) {
         Library lib = new Library();
         BookDatabaseManager.loadLibrary(lib);
+//        lib.getAuthorList().get(0).setFirstName("Test");
 
         printOptions();
         System.out.println("Choose an option: ");
