@@ -95,7 +95,7 @@ public class BookDatabaseManager {
 
                 // Add relationships if the book and author exist
                 currentBook.addAuthor(currentAuthor);
-                currentAuthor.addBook(currentBook);
+//                currentAuthor.addBook(currentBook);
 
             }
             conn.close();
